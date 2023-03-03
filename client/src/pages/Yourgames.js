@@ -6,7 +6,7 @@ import './pagesCss.css'
 const Yourgames = (userInfo) => {
   const navigate = useNavigate()
   const [user] = useState(JSON.parse(localStorage.getItem('userInfo')));
-  const [games , setGames] = useState([]);
+  const [games , setGames] = useState();
   console.log(user);
 // console.log()
   console.log(user._id)
@@ -21,7 +21,7 @@ const Yourgames = (userInfo) => {
       try {
         fetch(`http://localhost:5000/api/v1/getallgames/${user._id}`)
         .then((response) => response.json())
-        .then((data) => {console.log(data); setGames(data)} );
+        .then((data) => {console.log("mygames-->", data); setGames(data.reverse())} );
       } catch (error) {
           console.log(error)
       }
@@ -31,9 +31,10 @@ const Yourgames = (userInfo) => {
     }
     return (
     <div className='container'>
-      <div className='row d-flex justify-content-center'>
-        <div className='col-md-4 border .bg-body'>
+      <div className='row d-flex justify-content-center '>
+        <div className={`col-md-4 .bg-body ${games ? "border" : ""}`}>
             {
+              games ?
               games.length===0 ? (
                 <div>
                 <div className='hadding pt-4'>
@@ -50,6 +51,12 @@ const Yourgames = (userInfo) => {
               ): (
                 <div>
                   <Home games = {games} user={user} />
+                </div>
+              ) : (
+                <div class="text-center">
+                  <div class="spinner-border"  style={{width:"4rem",height:"4rem", marginTop:"30%"}} role="status">
+                    <span class="visually-hidden">Loading...</span>
+                  </div>
                 </div>
               )
             }

@@ -45,9 +45,20 @@ exports.updateMoves = async(req, res)=>{
     try {
         const move = req.body;
         const game = await Game.findOne({_id: req.params.id})
+        console.log("gmm", game);
+        if(game.status == "complete"){
+            res.status(421).json({ message : "game is over"});
+        }
         const moves = {...game.moves, ["place"+move.place]: move.user}
         console.log(moves.place1)
-        if((moves.place1 == moves.place2 && moves.place2 == moves.place3 && moves.place1 != undefined) || (moves.place4 == moves.place5 && moves.place5 == moves.place6 && moves.place1 != undefined) || (moves.place7 == moves.place8 && moves.place8 == moves.place9 && moves.place1 != undefined) || (moves.place1 == moves.place4 && moves.place4 == moves.place7 && moves.place1 != undefined) || (moves.place2 == moves.place5 && moves.place5 == moves.place8 && moves.place1 != undefined) || (moves.place3 == moves.place6 &&  moves.place6 == moves.place9 && moves.place1 != undefined) || (moves.place1 == moves.place5 && moves.place5 == moves.place9 && moves.place1 != undefined) || (moves.place3 == moves.place5 && moves.place5 == moves.place7 && moves.place1 != undefined)){
+        if((moves.place1 == moves.place2 && moves.place2 == moves.place3 && moves.place1 != undefined) || 
+        (moves.place4 == moves.place5 && moves.place5 == moves.place6 && moves.place1 != undefined) || 
+        (moves.place7 == moves.place8 && moves.place8 == moves.place9 && moves.place1 != undefined) || 
+        (moves.place1 == moves.place4 && moves.place4 == moves.place7 && moves.place1 != undefined) || 
+        (moves.place2 == moves.place5 && moves.place5 == moves.place8 && moves.place1 != undefined) || 
+        (moves.place3 == moves.place6 &&  moves.place6 == moves.place9 && moves.place1 != undefined) || 
+        (moves.place1 == moves.place5 && moves.place5 == moves.place9 && moves.place1 != undefined) || 
+        (moves.place3 == moves.place5 && moves.place5 == moves.place7 && moves.place1 != undefined)){
             const updateMoves = await Game.findOneAndUpdate({_id:req.params.id},{ moves,lastMove: move.user,status: "complete", winner: move.user})
         }
         if(Object.keys(moves).length == 9){
@@ -55,7 +66,11 @@ exports.updateMoves = async(req, res)=>{
         }
         const updateMoves = await Game.findOneAndUpdate({_id:req.params.id},{ moves,lastMove: move.user})
         const updatedGame = await Game.findOne({_id: req.params.id})
-        res.status(200).json(updatedGame);
+        console.log(updatedGame)
+        const user1 = await User.findOne({_id: updatedGame.player1_Id})
+        const user2 = await User.findOne({_id: updatedGame.player2_Id})
+        console.log({...updatedGame, player1: user1.name, player2 : user2.name})
+        res.status(200).json({...updatedGame._doc, player1: user1.name, player2 : user2.name});
 
         
     } catch (error) {
@@ -66,7 +81,7 @@ exports.updateMoves = async(req, res)=>{
 exports.getAllGames = async(req, res)=>{
     try {
         var allGames = []
-        const games = await Game.find({ $or:[ {'player1_Id':req.params.id}, {'player1_Id':req.params.id}]})
+        const games = await Game.find({ $or:[ {'player1_Id':req.params.id}, {'player2_Id':req.params.id}]})
         for(var obj of games){
             const st1 = await User.findOne({_id:obj.player1_Id })
             const st2 = await User.findOne({_id:obj.player2_Id })
@@ -74,6 +89,7 @@ exports.getAllGames = async(req, res)=>{
             newOBj = {...obj._doc,player1: st1.name,player2: st2.name}
             allGames.push(newOBj);
         }
+        console.log(allGames)
         res.status(200).json(allGames);
     } catch (error) {
         res.status(400).json({error: error.message})

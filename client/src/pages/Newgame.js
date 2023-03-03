@@ -22,10 +22,10 @@ const Newgame = () => {
         body: JSON.stringify({email,userId:user._id})
       });
       const content = await loginResponse.json();
-      console.log(content.status)
+      console.log("content", content)
       if(content){
         console.log(content)
-        navigate('/gameScreen')
+        navigate(`/gameScreen/${content.newGame._id}`)
       }else{
         // setErr(true)
       }

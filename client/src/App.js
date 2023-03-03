@@ -1,15 +1,21 @@
 import './App.css';
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom'
 import LandingPage from './pages/LandingPage';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Yourgames from './pages/Yourgames';
 import Newgame from './pages/Newgame';
 import GameScreen from './pages/GameScreen';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+
 function App() {
-  const [user] = useState(JSON.parse(localStorage.getItem('userInfo')));
-  // console.log("app" , user)
+  const [user, setUser] = useState();
+  
+  
+  useEffect(() => {
+    setUser(JSON.parse(localStorage.getItem('userInfo')))
+  }, []);
+  // const user = "sanjay"
   return (
     <div className="App">
       <BrowserRouter>

@@ -1,8 +1,19 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './pagesCss.css'
-const LandingPage = () => {
+const LandingPage = (props) => {
   const navigate = useNavigate()
+  console.log("p-->", props.userInfo);
+useEffect(()=>{
+  checkUser();
+},[]);
+
+  const checkUser = ()=>{
+    if(props.userInfo){
+      console.log("kkkkkkkkkkkk")
+      navigate("/mygames");
+    }
+  }
   const gotoLogin = ()=>{
     navigate('/login')
   }

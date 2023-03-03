@@ -16,6 +16,7 @@ const Register = () => {
       email,
       password
     }
+    console.log("bodyyyy", body);
     try {
       const loginResponse = await fetch('http://localhost:5000/api/v1/register', {
         method: 'POST',
@@ -26,10 +27,12 @@ const Register = () => {
         body: JSON.stringify(body)
       });
       const content = await loginResponse.json();
-      console.log(content.status)
+      console.log("ress--", content)
       if(content.status==200){
+        console.log("stststtsstttss")
         localStorage.setItem("userInfo",JSON.stringify(content.userLogin))
-        navigate('/mygames')
+        console.log("stststtsstttss")
+        navigate('/login')
       }else{
         setErr(true)
       }

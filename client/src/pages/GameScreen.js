@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
-import {Link, useParams} from 'react-router-dom'
+import {Link, useNavigate, useParams} from 'react-router-dom'
 import './pagesCss.css'
 
-const GameScreen = () => {
+const GameScreen = (props) => {
   const {id} = useParams()
   const [games, setGames] = useState()
   const [user, setUser] = useState({});
   const [flag, setFlag] = useState(false);
+  const navigate = useNavigate();
   // console.log(id)
   // console.log(user);
   const getGameData = async()=>{
@@ -22,8 +23,17 @@ const GameScreen = () => {
     setUser(JSON.parse(localStorage.getItem("userInfo")))
     getGameData();
   }, []);
+  const userMove = async(idx)=>{
+    const data = {place : idx, user: props.userInfo._id}
+    const res = await axios.put(`http://localhost:5000/api/v1/updatemove/${id}`, data);
+    console.log(res.data);
+    setGames(res.data);
+    setFlag(true);
+  }
     
-    
+  const startNewGame =()=>{
+    navigate('/newgame');
+  }
   // console.log(games)
   return (
     <>
@@ -47,36 +57,36 @@ const GameScreen = () => {
                   <p>{games.status =="running"? (games.lastMove == user._id ? "Their move": "Your move") : (games.winner == "draw" ? "It’s a Draw!" : games.winner == user._id ? "You win":"You Lose")  }</p>
               </div>
               <div className='grid-box'>
-                  <div className='grid-item piece d-flex justify-content-center' onClick={(e)=>{ }}>
-                      <h1>{games.moves.place1? ( user._id == games.moves.place1? "X":"O" ):""}</h1>
+                  <div className='grid-item piece d-flex justify-content-center' onClick={(e)=>{userMove(1) }} >
+                      <h1>{games?.moves?.place1? ( user._id == games?.moves?.place1? "X":"O" ):""}</h1>
                   </div>
-                  <div className='grid-item piece d-flex justify-content-center'>
-                      <h1>{games.moves.place2? ( user._id == games.moves.place2? "X":"O" ):""}</h1>
+                  <div className='grid-item piece d-flex justify-content-center' onClick={(e)=>{userMove(2) }}>
+                      <h1>{games?.moves?.place2? ( user._id == games?.moves?.place2? "X":"O" ):""}</h1>
                   </div>
-                  <div className='grid-item piece d-flex justify-content-center'>
-                      <h1>{games.moves.place3? ( user._id == games.moves.place3? "X":"O" ):""}</h1>
+                  <div className='grid-item piece d-flex justify-content-center' onClick={(e)=>{userMove(3) }}>
+                      <h1>{games?.moves?.place3? ( user._id == games?.moves?.place3? "X":"O" ):""}</h1>
                   </div>
-                  <div className='grid-item piece d-flex justify-content-center'>
-                      <h1>{games.moves.place4? ( user._id == games.moves.place4? "X":"O" ):""}</h1>
+                  <div className='grid-item piece d-flex justify-content-center' onClick={(e)=>{userMove(4) }}>
+                      <h1>{games?.moves?.place4? ( user._id == games?.moves?.place4? "X":"O" ):""}</h1>
                   </div>
-                  <div className='grid-item piece d-flex justify-content-center'>
-                      <h1>{games.moves.place5? ( user._id == games.moves.place5? "X":"O" ):""}</h1>
+                  <div className='grid-item piece d-flex justify-content-center' onClick={(e)=>{userMove(5) }}>
+                      <h1>{games?.moves?.place5? ( user._id == games?.moves?.place5? "X":"O" ):""}</h1>
                   </div>
-                  <div className='grid-item piece d-flex justify-content-center'>
-                      <h1>{games.moves.place6? ( user._id == games.moves.place6? "X":"O" ):""}</h1>
+                  <div className='grid-item piece d-flex justify-content-center' onClick={(e)=>{userMove(6) }}>
+                      <h1>{games?.moves?.place6? ( user._id == games?.moves?.place6? "X":"O" ):""}</h1>
                   </div>
-                  <div className='grid-item piece d-flex justify-content-center'>
-                      <h1>{games.moves.place7? ( user._id == games.moves.place7? "X":"O" ):""}</h1>
+                  <div className='grid-item piece d-flex justify-content-center' onClick={(e)=>{userMove(7) }}>
+                      <h1>{games?.moves?.place7? ( user._id == games?.moves?.place7? "X":"O" ):""}</h1>
                   </div>
-                  <div className='grid-item piece d-flex justify-content-center'>
-                      <h1>{games.moves.place8? ( user._id == games.moves.place8? "X":"O" ):""}</h1>
+                  <div className='grid-item piece d-flex justify-content-center' onClick={(e)=>{userMove(8) }}>
+                      <h1>{games?.moves?.place8? ( user._id == games?.moves?.place8? "X":"O" ):""}</h1>
                   </div>
-                  <div className='grid-item piece d-flex justify-content-center'>
-                      <h1>{games.moves.place9? ( user._id == games.moves.place9? "X":"O" ):""}</h1>
+                  <div className='grid-item piece d-flex justify-content-center' onClick={(e)=>{userMove(9) }}>
+                      <h1>{games?.moves?.place9? ( user._id == games?.moves?.place9? "X":"O" ):""}</h1>
                   </div>
               </div>
               <div className='my-3 mt-5'>
-                  <button className='btn btn-login w-100'>{games.status=="running"? games.lastMove == user._id ? "Waiting for Harsh":"submit" : "Start another game"}</button>
+                  <button className='btn btn-login w-100' onClick={games.status=="running" ? "" : startNewGame} >{games.status=="running"? games.lastMove == user._id ? "Waiting for Harsh":"submit" : "Start another game"}</button>
               </div>
 
           </div>
